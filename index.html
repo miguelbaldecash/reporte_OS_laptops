@@ -11748,9 +11748,10 @@ function af(){
   const fS=document.getElementById('fSearch').value.toLowerCase();
 
   let vis=0,tot=0,conOS=0,sinOS=0,conFCT=0,sinFCT=0,totUnits=0,totSpend=0;
+  let visT1=0,visT2=0;
   const osDet={},osGrp={},unitsGrp={},spendGrp={},brandData={};
 
-  document.querySelectorAll('#t1 tbody tr, #t2 tbody tr').forEach(tr=>{
+  function processRow(tr){
     tot++;
     const d=tr.dataset;
     const m=d.marca,o=d.os,od=d.osdetail,f=d.fct,e=d.estado,t=d.tipo,y=d.years;
@@ -11786,11 +11787,15 @@ function af(){
     const b=brandData[m];b.total++;b.units+=u;b.spend+=s;
     if(o!=='NO DETERMINADO')b.conOS++;else b.sinOS++;
     b.os[o]=(b.os[o]||0)+1;
-  });
+    return show;
+  }
+
+  document.querySelectorAll('#t1 tbody tr').forEach(tr=>{if(processRow(tr))visT1++;});
+  document.querySelectorAll('#t2 tbody tr').forEach(tr=>{if(processRow(tr))visT2++;});
 
   document.getElementById('fCount').textContent=vis+' de '+tot+' modelos';
-  document.getElementById('countConOS').textContent=conOS;
-  document.getElementById('countSinOS').textContent=sinOS;
+  document.getElementById('countConOS').textContent=visT1;
+  document.getElementById('countSinOS').textContent=visT2;
 
   // Stats cards
   const pct=v=>(vis>0?(v/vis*100).toFixed(1):'0')+'%';
